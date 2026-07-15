@@ -21,7 +21,13 @@ public class Server {
     private final Gson gson = new Gson();
 
     public Server() {
-        dataAccess = new MemoryDataAccess();
+        DataAccess dataAccess;
+        try {
+            dataAccess = new MySqlDataAccess();
+        } catch (DataAccessException e) {
+            throw new RuntimeException("Failed to initialize database: " + e.getMessage(), e);
+        }
+        this.dataAccess = dataAccess;
         clearService = new ClearService(dataAccess);
         userService = new UserService(dataAccess);
         gameService = new GameService(dataAccess);
